@@ -93,4 +93,14 @@ public class Hand {
         }
         return sum;
     }
+
+    /**
+     * Checks if hand is void of given suit
+     *
+     * @param suit Suit checking void
+     * @return True if void, false if not
+     */
+    boolean isVoid(Card.Suit suit) {
+        return mCards.get(suit).isEmpty();
+    }
 }

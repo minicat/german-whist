@@ -161,24 +161,24 @@ public class HandView extends View {
             Log.e(TAG, "Card: " + selected.toString());
             switch (action) {
                 case (MotionEvent.ACTION_UP):
-                    Log.e(TAG, "ACTION UP");
+                    //Log.e(TAG, "ACTION UP");
                     if (mHandListener != null) {
                         mHandListener.onCardPlayed(selected);
                     }
                     return true;
                 case (MotionEvent.ACTION_DOWN):
-                    Log.e(TAG, "Action was DOWN");
+                    //Log.e(TAG, "Action was DOWN");
                     // TODO: Highlight current card somehow
                     return true;
             /*case (MotionEvent.ACTION_MOVE) :
                 Log.e(TAG,"Action was MOVE");
                 return true; */
                 case (MotionEvent.ACTION_CANCEL):
-                    Log.e(TAG, "Action was CANCEL");
+                    //Log.e(TAG, "Action was CANCEL");
                     return true;
                 case (MotionEvent.ACTION_OUTSIDE):
-                    Log.e(TAG, "Movement occurred outside bounds " +
-                            "of current screen element");
+                    //Log.e(TAG, "Movement occurred outside bounds " +
+                    //"of current screen element");
                     return true;
                 default:
                     return super.onTouchEvent(event);

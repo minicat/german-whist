@@ -29,6 +29,8 @@ public class MainActivity extends ActionBarActivity {
 
     HandView mHandView;
 
+    GameState mGameState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +62,9 @@ public class MainActivity extends ActionBarActivity {
         mPlayerHand = new Hand(playerCards);
         mCompHand = new Hand(compCards);
 
+        // Make game state
+        mGameState = new GameState(mShownPile.getFirst().mSuit, true, mPlayerHand, mCompHand);
+
         /*
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -75,8 +80,11 @@ public class MainActivity extends ActionBarActivity {
      */
     void playCard(Card card) {
         Log.e(TAG, card.toString());
+
         // Remove it from the player's hand
         mPlayerHand.remove(card);
+
+
         // Redraw
         mHandView.invalidate();
 
