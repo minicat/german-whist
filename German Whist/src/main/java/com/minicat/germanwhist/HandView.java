@@ -24,6 +24,8 @@ public class HandView extends View {
 
     static final String TAG = "HandView";
 
+    GameState mGameState;
+
     //Context mContext;
     Paint mTextPaint;
     int mWidth;
@@ -42,16 +44,18 @@ public class HandView extends View {
     // Maps x coordinates from the line of cards in hand to card
     Map<Pair<Integer, Integer>, Card> mBoundsToMap;
 
-    public HandView(Context context) {
-        this(context, null);
+    public HandView(GameState gameState, Context context) {
+        this(gameState, context, null);
     }
 
-    public HandView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public HandView(GameState gameState, Context context, AttributeSet attrs) {
+        this(gameState, context, attrs, 0);
     }
 
-    public HandView(Context context, AttributeSet attrs, int defStyle) {
+    public HandView(GameState gameState, Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        mGameState = gameState;
 
         mBoundsToMap = new HashMap<Pair<Integer, Integer>, Card>();
 
@@ -88,7 +92,7 @@ public class HandView extends View {
         mCardsBottom = mHeight - mScreenPadding;
 
         int i = 0, xLeft, xRight;
-        for (Map.Entry<Card.Suit, ArrayList<Card>> entry : MainActivity.mPlayerHand.mCards.entrySet()) {
+        for (Map.Entry<Card.Suit, ArrayList<Card>> entry : mGameState.mPlayerHand.mCards.entrySet()) {
             for (Card c : entry.getValue()) {
                 Drawable cardDrawable = c.makeDrawable(getContext());
                 // x = (int)(i * (cardDrawable.getIntrinsicWidth()) * 2/5);
@@ -103,7 +107,7 @@ public class HandView extends View {
                 cardDrawable.draw(canvas);
 
                 // IF not last card, then width is less
-                if (i < MainActivity.mPlayerHand.size() - 1)
+                if (i < mGameState.mPlayerHand.size() - 1)
                     xRight = xLeft + (int) ((mWidth - mScreenPadding * 2 - Card.WIDTH) / 12);
                     //else xRight = xLeft + cardDrawable.getIntrinsicWidth();
                     //if (i < MainActivity.mPlayerHand.mCards.size() - 1) xRight = xLeft + (int)((mWidth - mScreenPadding*2 - Card.WIDTH) / 12);
@@ -117,16 +121,16 @@ public class HandView extends View {
             }
         }
 
-        Card topCard = MainActivity.mShownPile.getFirst();
+        Card topCard = (Card) mGameState.mShownPile.peek();
         Drawable topCardDrawable = topCard.makeDrawable(getContext());
         topCardDrawable.setBounds(10, 40, 10 + topCardDrawable.getIntrinsicWidth(), 40 + topCardDrawable.getIntrinsicHeight());
         topCardDrawable.draw(canvas);
         canvas.drawText("Top Card:", 10, 30, mTextPaint);
-        canvas.drawText("Round Number: " + MainActivity.mRound, 200, 30, mTextPaint);
-        canvas.drawText("Cards Left: " + MainActivity.mShownPile.size(), 200, 60, mTextPaint);
-        canvas.drawText("Player Tricks Won: " + MainActivity.mPlayerTricks, 200, 90, mTextPaint);
+        canvas.drawText("Round Number: " + mGameState.mRound, 200, 30, mTextPaint);
+        canvas.drawText("Cards Left: " + mGameState.mShownPile.size(), 200, 60, mTextPaint);
+        canvas.drawText("Player Tricks Won: " + mGameState.mPlayerTricks, 200, 90, mTextPaint);
         //TODO ?? -14 not 13 : rounds played
-        int compTricksMaybe = MainActivity.mRound - 14 - MainActivity.mPlayerTricks;
+        int compTricksMaybe = mGameState.mRound - 14 - mGameState.mPlayerTricks;
         int compTricks = (compTricksMaybe > 0) ? compTricksMaybe : 0;
         canvas.drawText("Computer Tricks Won: " + compTricks, 200, 120, mTextPaint);
 

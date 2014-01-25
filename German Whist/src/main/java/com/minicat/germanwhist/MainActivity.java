@@ -9,21 +9,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class MainActivity extends ActionBarActivity {
-
-    static Hand mPlayerHand;
-    static Hand mCompHand;
-
-    // apparently this is a queue
-    static LinkedList<Card> mShownPile;
-    static LinkedList<Card> mHiddenPile;
-
-    static int mRound = 1;
-    static int mPlayerTricks = 0;
 
     String TAG = "MainActivity";
 
@@ -36,7 +27,26 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mHandView = (HandView) findViewById(R.id.hand_view);
+        ArrayList<Card> playerCards = new ArrayList<Card>();
+        ArrayList<Card> compCards = new ArrayList<Card>();
+        LinkedList<Card> shownPile = new LinkedList<Card>();
+        LinkedList<Card> hiddenPile = new LinkedList<Card>();
+
+        Deck deck = new Deck();
+        deck.shuffle();
+        deck.deal(playerCards, compCards, shownPile, hiddenPile);
+
+        Hand playerHand = new Hand(playerCards);
+        Hand compHand = new Hand(compCards);
+
+        // Make game state
+        mGameState = new GameState(playerHand, compHand, shownPile, hiddenPile, true);
+
+
+        mHandView = new HandView(mGameState, this);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.everything);
+        layout.addView(mHandView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        //mHandView = (HandView) findViewById(R.id.hand_view);
 
         // Set up listener
         mHandView.setEventListener(new HandView.HandListener() {
@@ -49,21 +59,6 @@ public class MainActivity extends ActionBarActivity {
 
         //ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
-
-        ArrayList<Card> playerCards = new ArrayList<Card>();
-        ArrayList<Card> compCards = new ArrayList<Card>();
-        mShownPile = new LinkedList<Card>();
-        mHiddenPile = new LinkedList<Card>();
-
-        Deck deck = new Deck();
-        deck.shuffle();
-        deck.deal(playerCards, compCards, mShownPile, mHiddenPile);
-
-        mPlayerHand = new Hand(playerCards);
-        mCompHand = new Hand(compCards);
-
-        // Make game state
-        mGameState = new GameState(mShownPile.getFirst().mSuit, true, mPlayerHand, mCompHand);
 
         /*
         if (savedInstanceState == null) {
@@ -81,14 +76,14 @@ public class MainActivity extends ActionBarActivity {
     void playCard(Card card) {
         Log.e(TAG, card.toString());
 
+        // Let the player play the card if they are playing first or
         // Remove it from the player's hand
-        mPlayerHand.remove(card);
+        //mPlayerHand.remove(card);
 
 
         // Redraw
         mHandView.invalidate();
 
-        mRound++;
 
     }
 

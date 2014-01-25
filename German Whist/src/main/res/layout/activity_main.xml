@@ -12,9 +12,9 @@
     tools:context="com.minicat.germanwhist.MainActivity"
     android:id="@+id/everything"
     android:orientation="vertical">
-
+    <!--
     <com.minicat.germanwhist.HandView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/hand_view" />
+        android:id="@+id/hand_view" /> -->
 </LinearLayout>
