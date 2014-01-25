@@ -115,17 +115,17 @@ public class HandView extends View {
                 else xRight = xLeft + Card.WIDTH;
                 // Put in map
                 mBoundsToMap.put(new Pair<Integer, Integer>(xLeft, xRight), c);
-                Log.e(TAG, "i = " + i + " " + xLeft + "," + xRight);
+                //Log.e(TAG, "i = " + i + " " + xLeft + "," + xRight);
                 i++;
 
             }
         }
 
-        Card topCard = (Card) mGameState.mShownPile.peek();
-        Drawable topCardDrawable = topCard.makeDrawable(getContext());
-        topCardDrawable.setBounds(10, 40, 10 + topCardDrawable.getIntrinsicWidth(), 40 + topCardDrawable.getIntrinsicHeight());
-        topCardDrawable.draw(canvas);
-        canvas.drawText("Top Card:", 10, 30, mTextPaint);
+        if (!mGameState.mShownPile.isEmpty()) {
+
+            canvas.drawText("Top Card:", 10, 30, mTextPaint);
+            drawCard((Card) mGameState.mShownPile.peek(), 10, 40, canvas);
+        }
         canvas.drawText("Round Number: " + mGameState.mRound, 200, 30, mTextPaint);
         canvas.drawText("Cards Left: " + mGameState.mShownPile.size(), 200, 60, mTextPaint);
         canvas.drawText("Player Tricks Won: " + mGameState.mPlayerTricks, 200, 90, mTextPaint);
@@ -134,7 +134,41 @@ public class HandView extends View {
         int compTricks = (compTricksMaybe > 0) ? compTricksMaybe : 0;
         canvas.drawText("Computer Tricks Won: " + compTricks, 200, 120, mTextPaint);
 
+        // Draw first turn card if possible
+        canvas.drawText("Computer played:", 450, 30, mTextPaint);
+        if (mGameState.mFirstPlayed != null) {
+            drawCard(mGameState.mFirstPlayed, 450, 40, canvas);
+        }
+
+        // Draw previous trick if there was one
+        if (mGameState.mPreviousTrick != null) {
+            GameState.Trick t = mGameState.mPreviousTrick;
+            canvas.drawText("Previous trick:", 200, 200, mTextPaint);
+            canvas.drawText("Player first: " + t.playerFirst + " Player won: " + t.playerWon, 200, 230, mTextPaint);
+            drawCard(t.first, 200, 240, canvas);
+            drawCard(t.second, 330, 240, canvas);
+            if (t.playerDrew != null) {
+                canvas.drawText("You drew: " + t.playerDrew.toString(), 400, 200, mTextPaint);
+            }
+        }
+
     }
+
+    /**
+     * Draws provided card at coordinates provided on canvas provided
+     *
+     * @param card   card to draw (x, y) = top left corner
+     * @param x      x coord in pixels
+     * @param y      y coord in pixels
+     * @param canvas canvas to draw on
+     */
+    void drawCard(Card card, int x, int y, Canvas canvas) {
+        Drawable d = card.makeDrawable(getContext());
+        // can use card height/width instead
+        d.setBounds(x, y, x + d.getIntrinsicWidth(), y + d.getIntrinsicHeight());
+        d.draw(canvas);
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

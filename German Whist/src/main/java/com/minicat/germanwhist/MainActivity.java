@@ -76,10 +76,27 @@ public class MainActivity extends ActionBarActivity {
     void playCard(Card card) {
         Log.e(TAG, card.toString());
 
-        // Let the player play the card if they are playing first or
-        // Remove it from the player's hand
-        //mPlayerHand.remove(card);
+        // Is this an invalid play?
 
+        if (!mGameState.mPlayerTurn && !mGameState.isValidPlay(card)) {
+            Log.e(TAG, "Invalid play");
+            // TODO: some kind of indicator
+        } else {
+            // Play the card
+            if (mGameState.mPlayerTurn) {
+                mGameState.playFirst(card);
+                // Have computer play their card
+                // TODO: This doesnt follow the rules atm. Fix!
+                mGameState.playSecond(mGameState.mCompHand.mergeCards().get(0));
+            } else mGameState.playSecond(card);
+
+            // Resolve the round
+            mGameState.resolveRound();
+
+            // Have computer play their card, if its their turn next
+            if (!mGameState.mPlayerTurn && mGameState.mCompHand.size() != 0)
+                mGameState.playFirst(mGameState.mCompHand.mergeCards().get(0));
+        }
 
         // Redraw
         mHandView.invalidate();

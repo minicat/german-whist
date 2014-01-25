@@ -1,5 +1,7 @@
 package com.minicat.germanwhist;
 
+import android.util.Log;
+
 import java.util.Queue;
 
 /**
@@ -8,7 +10,7 @@ import java.util.Queue;
  */
 public class GameState {
 
-    // whether it's the players turn or not
+    // whether it's the players turn to play first or not
     boolean mPlayerTurn;
 
     final Card.Suit mTrumps;
@@ -22,8 +24,12 @@ public class GameState {
     Card mFirstPlayed;
     Card mSecondPlayed;
 
+    Trick mPreviousTrick;
+
     static int mRound = 1;
     static int mPlayerTricks = 0;
+
+    String TAG = "GameState";
 
     GameState(Hand playerHand, Hand compHand, Queue<Card> shownPile, Queue<Card> hiddenPile,
               boolean playerTurnFirst) {
@@ -37,10 +43,12 @@ public class GameState {
 
     void playFirst(Card card) {
         mFirstPlayed = card;
+        Log.e(TAG, "playFirst " + mPlayerTurn + " " + card.toString());
     }
 
     void playSecond(Card card) {
         mSecondPlayed = card;
+        Log.e(TAG, "playSecond " + mPlayerTurn + " " + card.toString());
     }
 
     /**
@@ -87,22 +95,67 @@ public class GameState {
             }
         }
 
-        // Deal appropriately
-        if ((mPlayerTurn && firstWon) || (!mPlayerTurn && !firstWon)) {
-            // Player gets shown card
-            mPlayerHand.add((Card) mShownPile.poll());
-            mCompHand.add((Card) mHiddenPile.poll());
+
+        boolean playerWon = ((mPlayerTurn && firstWon) || (!mPlayerTurn && !firstWon));
+
+        // make last trick
+        mPreviousTrick = new Trick(mFirstPlayed, mSecondPlayed, mPlayerTurn, playerWon);
+
+
+        // Deal if required
+        if (!mShownPile.isEmpty()) {
+            if (playerWon) {
+                // Player gets shown card
+                Log.e(TAG, "Player gets: " + (mShownPile.peek()).toString());
+                Log.e(TAG, "Computer gets: " + (mHiddenPile.peek()).toString());
+                mPreviousTrick.setPlayerDrew((Card) mShownPile.peek());
+                mPlayerHand.add((Card) mShownPile.poll());
+                mCompHand.add((Card) mHiddenPile.poll());
+
+            } else {
+                // Player gets hidden card
+                Log.e(TAG, "Player gets: " + (mHiddenPile.peek()).toString());
+                Log.e(TAG, "Computer gets: " + (mShownPile.peek()).toString());
+                mPreviousTrick.setPlayerDrew((Card) mHiddenPile.peek());
+                mPlayerHand.add((Card) mHiddenPile.poll());
+                mCompHand.add((Card) mShownPile.poll());
+            }
         } else {
-            // Player gets hidden card
-            mPlayerHand.add((Card) mHiddenPile.poll());
-            mCompHand.add((Card) mShownPile.poll());
+            // Increment score if this is a counted trick
+            if (playerWon) {
+                mPlayerTricks++;
+            }
         }
 
+        // Fix turns
+        if (playerWon) mPlayerTurn = true;
+        else mPlayerTurn = false;
 
-        // increment whose turn it is
-        mPlayerTurn = !mPlayerTurn;
+        // Fix played
+        mFirstPlayed = null;
+        mSecondPlayed = null;
 
         // increment round
         mRound++;
+
+    }
+
+    class Trick {
+        Card first;
+        Card second;
+        boolean playerFirst;
+        boolean playerWon;
+        Card playerDrew;
+
+        Trick(Card first, Card second, boolean playerFirst, boolean playerWon) {
+            this.first = first;
+            this.second = second;
+            this.playerFirst = playerFirst;
+            this.playerWon = playerWon;
+        }
+
+        public void setPlayerDrew(Card playerDrew) {
+            this.playerDrew = playerDrew;
+        }
     }
 }

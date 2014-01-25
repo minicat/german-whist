@@ -103,4 +103,13 @@ public class Hand {
     boolean isVoid(Card.Suit suit) {
         return mCards.get(suit).isEmpty();
     }
+
+    ArrayList<Card> mergeCards() {
+        ArrayList<Card> all = new ArrayList<Card>();
+        all.addAll(mCards.get(Card.Suit.CLUBS));
+        all.addAll(mCards.get(Card.Suit.DIAMONDS));
+        all.addAll(mCards.get(Card.Suit.HEARTS));
+        all.addAll(mCards.get(Card.Suit.SPADES));
+        return all;
+    }
 }
