@@ -19,10 +19,10 @@ public class Hand {
     Hand(ArrayList<Card> cards) {
         // Initialise all the suit arraylists
         mCards = new HashMap<Card.Suit, ArrayList<Card>>();
+        mCards.put(Card.Suit.DIAMONDS, new ArrayList<Card>());
         mCards.put(Card.Suit.CLUBS, new ArrayList<Card>());
         mCards.put(Card.Suit.HEARTS, new ArrayList<Card>());
         mCards.put(Card.Suit.SPADES, new ArrayList<Card>());
-        mCards.put(Card.Suit.DIAMONDS, new ArrayList<Card>());
 
         // Assign cards based on suit
         for (Card c : cards) {

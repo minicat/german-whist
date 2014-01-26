@@ -59,7 +59,7 @@ public final class Card {
         }
 
         //TODO: should this be private? HAVE NEVER USED ENUMS BEFORE
-        private String getRep() {
+        String getRep() {
             return rep;
         }
 

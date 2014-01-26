@@ -16,7 +16,7 @@ public class GameState {
     final Card.Suit mTrumps;
 
     Hand mPlayerHand;
-    Hand mCompHand;
+    Hand mBotHand;
 
     Queue mShownPile;
     Queue mHiddenPile;
@@ -26,15 +26,16 @@ public class GameState {
 
     Trick mPreviousTrick;
 
-    static int mRound = 1;
-    static int mPlayerTricks = 0;
+    int mRound = 1;
+    int mPlayerTricks = 0;
+    int mBotTricks = 0;
 
     String TAG = "GameState";
 
-    GameState(Hand playerHand, Hand compHand, Queue<Card> shownPile, Queue<Card> hiddenPile,
+    GameState(Hand playerHand, Hand botHand, Queue<Card> shownPile, Queue<Card> hiddenPile,
               boolean playerTurnFirst) {
         mPlayerHand = playerHand;
-        mCompHand = compHand;
+        mBotHand = botHand;
         mShownPile = shownPile;
         mHiddenPile = hiddenPile;
         mTrumps = shownPile.peek().mSuit;
@@ -72,9 +73,9 @@ public class GameState {
         // Remove cards from hands
         if (mPlayerTurn) {
             mPlayerHand.remove(mFirstPlayed);
-            mCompHand.remove(mSecondPlayed);
+            mBotHand.remove(mSecondPlayed);
         } else {
-            mCompHand.remove(mFirstPlayed);
+            mBotHand.remove(mFirstPlayed);
             mPlayerHand.remove(mSecondPlayed);
         }
 
@@ -107,18 +108,18 @@ public class GameState {
             if (playerWon) {
                 // Player gets shown card
                 Log.e(TAG, "Player gets: " + (mShownPile.peek()).toString());
-                Log.e(TAG, "Computer gets: " + (mHiddenPile.peek()).toString());
+                Log.e(TAG, "Bot gets: " + (mHiddenPile.peek()).toString());
                 mPreviousTrick.setPlayerDrew((Card) mShownPile.peek());
                 mPlayerHand.add((Card) mShownPile.poll());
-                mCompHand.add((Card) mHiddenPile.poll());
+                mBotHand.add((Card) mHiddenPile.poll());
 
             } else {
                 // Player gets hidden card
                 Log.e(TAG, "Player gets: " + (mHiddenPile.peek()).toString());
-                Log.e(TAG, "Computer gets: " + (mShownPile.peek()).toString());
+                Log.e(TAG, "Bot gets: " + (mShownPile.peek()).toString());
                 mPreviousTrick.setPlayerDrew((Card) mHiddenPile.peek());
                 mPlayerHand.add((Card) mHiddenPile.poll());
-                mCompHand.add((Card) mShownPile.poll());
+                mBotHand.add((Card) mShownPile.poll());
             }
         } else {
             // Increment score if this is a counted trick

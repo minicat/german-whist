@@ -101,10 +101,7 @@ public class HandView extends View {
                 // dunno why /12 vs /13....hmm
                 //xLeft = mScreenPadding + (int)(i * (mWidth - mScreenPadding*2 - cardDrawable.getIntrinsicWidth()) / 12);
                 xLeft = mScreenPadding + (int) (i * (mWidth - mScreenPadding * 2 - Card.WIDTH) / 12);
-                //cardDrawable.setBounds(xLeft, mHeight - mScreenPadding - cardDrawable.getIntrinsicHeight() , xLeft + cardDrawable.getIntrinsicWidth(),
-                //mHeight - mScreenPadding);
-                cardDrawable.setBounds(xLeft, mCardsTop, xLeft + Card.WIDTH, mCardsBottom);
-                cardDrawable.draw(canvas);
+                drawCard(c, xLeft, mCardsTop, canvas);
 
                 // IF not last card, then width is less
                 if (i < mGameState.mPlayerHand.size() - 1)
@@ -126,6 +123,9 @@ public class HandView extends View {
             canvas.drawText("Top Card:", 10, 30, mTextPaint);
             drawCard((Card) mGameState.mShownPile.peek(), 10, 40, canvas);
         }
+
+        canvas.drawText("Trumps: " + mGameState.mTrumps.getRep(), 10, 240, mTextPaint);
+
         canvas.drawText("Round Number: " + mGameState.mRound, 200, 30, mTextPaint);
         canvas.drawText("Cards Left: " + mGameState.mShownPile.size(), 200, 60, mTextPaint);
         canvas.drawText("Player Tricks Won: " + mGameState.mPlayerTricks, 200, 90, mTextPaint);
@@ -135,9 +135,9 @@ public class HandView extends View {
         canvas.drawText("Computer Tricks Won: " + compTricks, 200, 120, mTextPaint);
 
         // Draw first turn card if possible
-        canvas.drawText("Computer played:", 450, 30, mTextPaint);
+        canvas.drawText("Computer played:", 480, 30, mTextPaint);
         if (mGameState.mFirstPlayed != null) {
-            drawCard(mGameState.mFirstPlayed, 450, 40, canvas);
+            drawCard(mGameState.mFirstPlayed, 500, 40, canvas);
         }
 
         // Draw previous trick if there was one

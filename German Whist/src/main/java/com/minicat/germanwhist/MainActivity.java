@@ -28,19 +28,19 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         ArrayList<Card> playerCards = new ArrayList<Card>();
-        ArrayList<Card> compCards = new ArrayList<Card>();
+        ArrayList<Card> botCards = new ArrayList<Card>();
         LinkedList<Card> shownPile = new LinkedList<Card>();
         LinkedList<Card> hiddenPile = new LinkedList<Card>();
 
         Deck deck = new Deck();
         deck.shuffle();
-        deck.deal(playerCards, compCards, shownPile, hiddenPile);
+        deck.deal(playerCards, botCards, shownPile, hiddenPile);
 
         Hand playerHand = new Hand(playerCards);
-        Hand compHand = new Hand(compCards);
+        Hand botHand = new Hand(botCards);
 
         // Make game state
-        mGameState = new GameState(playerHand, compHand, shownPile, hiddenPile, true);
+        mGameState = new GameState(playerHand, botHand, shownPile, hiddenPile, true);
 
 
         mHandView = new HandView(mGameState, this);
@@ -85,17 +85,17 @@ public class MainActivity extends ActionBarActivity {
             // Play the card
             if (mGameState.mPlayerTurn) {
                 mGameState.playFirst(card);
-                // Have computer play their card
+                // Have bot play their card
                 // TODO: This doesnt follow the rules atm. Fix!
-                mGameState.playSecond(mGameState.mCompHand.mergeCards().get(0));
+                mGameState.playSecond(mGameState.mBotHand.mergeCards().get(0));
             } else mGameState.playSecond(card);
 
             // Resolve the round
             mGameState.resolveRound();
 
-            // Have computer play their card, if its their turn next
-            if (!mGameState.mPlayerTurn && mGameState.mCompHand.size() != 0)
-                mGameState.playFirst(mGameState.mCompHand.mergeCards().get(0));
+            // Have bot play their card, if its their turn next
+            if (!mGameState.mPlayerTurn && mGameState.mBotHand.size() != 0)
+                mGameState.playFirst(mGameState.mBotHand.mergeCards().get(0));
         }
 
         // Redraw
