@@ -100,6 +100,10 @@ public class MainActivity extends ActionBarActivity {
                 mGameState.playFirst(mWhistBot.playFirst());
         }
 
+
+        // If game won, have the hand view announce the winner!
+        mHandView.gameWon(true, mGameState.mPlayerTricks > 6);
+
         // Redraw
         mHandView.invalidate();
 

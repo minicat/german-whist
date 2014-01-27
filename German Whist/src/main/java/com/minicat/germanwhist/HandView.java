@@ -36,6 +36,9 @@ public class HandView extends View {
     int mCardsTop;
     int mCardsBottom;
 
+    boolean gameWon;
+    boolean playerWon;
+
 
     // This is how the activity communicates with the hand view. Observer pattern!
     private HandListener mHandListener;
@@ -152,6 +155,19 @@ public class HandView extends View {
             }
         }
 
+        // If game over, show winner
+        if (gameWon) {
+            String message = "Game over! Winner: ";
+            if (playerWon) message = message + "you! :D";
+            else message = message + "Catbot! :3";
+            canvas.drawText(message, 500, 10, mTextPaint);
+        }
+
+    }
+
+    public void gameWon(boolean gameWon, boolean playerWon) {
+        this.gameWon = gameWon;
+        this.playerWon = playerWon;
     }
 
     /**

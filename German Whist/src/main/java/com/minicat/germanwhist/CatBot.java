@@ -36,7 +36,10 @@ public class CatBot extends WhistBot {
             if (mCurr == null) mCurr = getLongestSuit();
             ArrayList<Card> ofSuit = g.mBotHand.mCards.get(mCurr);
             // Need to move on to the next suit
-            if (ofSuit.size() == 0) mCurr = getLongestSuit();
+            if (ofSuit.size() == 0) {
+                mCurr = getLongestSuit();
+                ofSuit = g.mBotHand.mCards.get(mCurr);
+            }
             return ofSuit.get(ofSuit.size() - 1);
         }
     }
