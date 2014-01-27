@@ -135,9 +135,9 @@ public class HandView extends View {
         canvas.drawText("Computer Tricks Won: " + compTricks, 200, 120, mTextPaint);
 
         // Draw first turn card if possible
-        canvas.drawText("Computer played:", 480, 30, mTextPaint);
         if (mGameState.mFirstPlayed != null) {
-            drawCard(mGameState.mFirstPlayed, 500, 40, canvas);
+            canvas.drawText("Computer played:", 10, 300, mTextPaint);
+            drawCard(mGameState.mFirstPlayed, 10, 310, canvas);
         }
 
         // Draw previous trick if there was one

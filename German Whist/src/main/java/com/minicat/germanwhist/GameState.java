@@ -63,7 +63,7 @@ public class GameState {
         if (card.mSuit == mFirstPlayed.mSuit) return true;
         // Or if void in that suit
         // TODO: this assumes its just checking the player hahahaha fix this later
-        if (mPlayerHand.isVoid(mTrumps)) return true;
+        if (mPlayerHand.isVoid(mFirstPlayed.mSuit)) return true;
         return false;
     }
 
