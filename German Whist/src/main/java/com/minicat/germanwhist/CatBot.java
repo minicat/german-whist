@@ -3,12 +3,16 @@ package com.minicat.germanwhist;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map;
 
 /**
  * Emma's german whist player! Meow.
  * Created by Emma on 26/01/14.
  */
 public class CatBot extends WhistBot {
+
+    // For second stage: suit currently playing top down from
+    Card.Suit mCurr;
 
     CatBot(GameState gameState) {
         super(gameState);
@@ -27,9 +31,28 @@ public class CatBot extends WhistBot {
         } else {
             // Second stage
             // Play highest from longest non trumps suit top down.
-            // TODO: to write
+            if (mCurr == null) mCurr = getLongestSuit();
+            ArrayList<Card> ofSuit = g.mBotHand.mCards.get(mCurr);
+            // Need to move on to the next suit
+            if (ofSuit.size() == 0) mCurr = getLongestSuit();
+            return ofSuit.get(ofSuit.size() - 1);
         }
     }
+
+    // Prioritize non trumps
+    private Card.Suit getLongestSuit() {
+        // TODO: well this is kind of ugly
+        int size = 0;
+        Card.Suit curr = g.mTrumps;
+        for (Map.Entry<Card.Suit, ArrayList<Card>> entry : g.mBotHand.mCards.entrySet()) {
+            if (entry.getValue().size() > size && entry.getKey() != g.mTrumps) {
+                size = entry.getValue().size();
+                curr = entry.getKey();
+            }
+        }
+        return curr;
+    }
+
 
     public Card playSecond() {
 
@@ -96,8 +119,7 @@ public class CatBot extends WhistBot {
      */
     boolean wantToWin(Card card) {
         // Simple logic: want to win if trumps or AKQ
-        if (card.mSuit == g.mTrumps || card.mRank.getVal() > Card.Rank.JACK.getVal()) return true;
-        return false;
+        return (card.mSuit == g.mTrumps || card.mRank.getVal() > Card.Rank.JACK.getVal());
     }
 
     /**
