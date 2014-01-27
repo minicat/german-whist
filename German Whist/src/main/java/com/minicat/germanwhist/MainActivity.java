@@ -22,6 +22,8 @@ public class MainActivity extends ActionBarActivity {
 
     GameState mGameState;
 
+    WhistBot mWhistBot;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +44,7 @@ public class MainActivity extends ActionBarActivity {
         // Make game state
         mGameState = new GameState(playerHand, botHand, shownPile, hiddenPile, true);
 
+        mWhistBot = new CatBot(mGameState);
 
         mHandView = new HandView(mGameState, this);
         LinearLayout layout = (LinearLayout) findViewById(R.id.everything);
@@ -86,8 +89,7 @@ public class MainActivity extends ActionBarActivity {
             if (mGameState.mPlayerTurn) {
                 mGameState.playFirst(card);
                 // Have bot play their card
-                // TODO: This doesnt follow the rules atm. Fix!
-                mGameState.playSecond(mGameState.mBotHand.mergeCards().get(0));
+                mGameState.playSecond(mWhistBot.playSecond());
             } else mGameState.playSecond(card);
 
             // Resolve the round
@@ -95,7 +97,7 @@ public class MainActivity extends ActionBarActivity {
 
             // Have bot play their card, if its their turn next
             if (!mGameState.mPlayerTurn && mGameState.mBotHand.size() != 0)
-                mGameState.playFirst(mGameState.mBotHand.mergeCards().get(0));
+                mGameState.playFirst(mWhistBot.playFirst());
         }
 
         // Redraw

@@ -1,5 +1,7 @@
 package com.minicat.germanwhist;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -124,50 +126,75 @@ public class CatBot extends WhistBot {
 
     /**
      * Finds the lowest non trumps card to play.
-     * if tie, returns from longest suit.
+     * TODO: if tie, returns from longest suit.
      * Does play trumps if no other choice :(
      *
      * @return Lowest non trumps card
      */
     Card playLowestNotTrumps() {
         ArrayList<Card> cards = g.mBotHand.mergeCards();
-        Collections.sort(cards, new lowestComparator());
+        Collections.sort(cards, new LowestComparator(g));
+
+        String temp = "";
+        for (Card c : cards) {
+            temp = temp + c.toString() + " ";
+        }
+        Log.e("testing lowestnottrumps", temp);
+        Log.e("testing lowestnottrumps", "trumps are " + g.mTrumps);
         return cards.get(0);
-        // TODO To Write
     }
 
 
     /**
      * Finds the lowest non trumps card to play, attempting to follow suit.
      * if tie, returns from longest suit.
-     * Does play trumps if no other choice :(
      *
      * @return Lowest non trumps card
      */
     Card playLowestNotTrumpsFollowSuit(Card.Suit suit) {
-        ArrayList<Card> cards = g.mBotHand.mergeCards();
-        Collections.sort(cards, new lowestComparator());
-        return cards.get(0);
-        // TODO To Write
+        // If can follow suit, play lowest
+        ArrayList<Card> suitCards = g.mBotHand.mCards.get(suit);
+        if (!suitCards.isEmpty()) {
+            return suitCards.get(0);
+        }
+        // otherwise, play lowest without following suit
+        return playLowestNotTrumps();
     }
 
     Card playHighestNotTrumps() {
-        return
-        // TODO to Write
+        ArrayList<Card> cards = g.mBotHand.mergeCards();
+        Collections.sort(cards, new LowestComparator(g));
+        // TODO: This is absolutely terrible.
+        Card temp = cards.get(0);
+        for (Card c : cards) {
+            if (c.mSuit != g.mTrumps) temp = c;
+            else break;
+        }
+        return temp;
     }
 }
 
 /**
  * Helps get the lowest non trumps card.
  */
-class lowestComparator implements Comparator<Card> {
+class LowestComparator implements Comparator<Card> {
+
+    GameState g;
+
+    LowestComparator(GameState g) {
+        this.g = g;
+    }
+
+    // TODO: Test this
     @Override
     public int compare(Card a, Card b) {
         // Return negative if a < b, positive if a > b, etc
-        // First, sort on suit. Trumps are highest.
-        if
+        // First, sort trumps out to the end.
+        if (a.mSuit != b.mSuit) {
+            if (a.mSuit == g.mTrumps) return 1;
+            else if (b.mSuit == g.mTrumps) return -1;
+        }
+        // otherwise sort on value
         return a.mRank.getVal() - b.mRank.getVal();
-
-        // TODO to write
     }
 }
