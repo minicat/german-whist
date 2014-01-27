@@ -77,7 +77,7 @@ public class HandView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        Log.e(TAG, "drawing");
+        //Log.e(TAG, "drawing");
 
         mHeight = this.getHeight();
         mWidth = this.getWidth();
@@ -196,7 +196,7 @@ public class HandView extends View {
         }
 
         if (selected != null) {
-            Log.e(TAG, "Card: " + selected.toString());
+            //Log.e(TAG, "Card: " + selected.toString());
             switch (action) {
                 case (MotionEvent.ACTION_UP):
                     //Log.e(TAG, "ACTION UP");
