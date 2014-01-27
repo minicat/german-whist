@@ -36,7 +36,7 @@ public class HandView extends View {
     int mCardsTop;
     int mCardsBottom;
 
-    boolean gameWon;
+    boolean gameWon = false;
     boolean playerWon;
 
 
@@ -156,11 +156,11 @@ public class HandView extends View {
         }
 
         // If game over, show winner
-        if (gameWon) {
+        if (gameWon == true) {
             String message = "Game over! Winner: ";
             if (playerWon) message = message + "you! :D";
             else message = message + "Catbot! :3";
-            canvas.drawText(message, 500, 10, mTextPaint);
+            canvas.drawText(message, 10, 500, mTextPaint);
         }
 
     }

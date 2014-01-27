@@ -92,6 +92,13 @@ public class MainActivity extends ActionBarActivity {
                 mGameState.playSecond(mWhistBot.playSecond());
             } else mGameState.playSecond(card);
 
+            // Log the bot hand
+            String s = "";
+            for (Card c : mGameState.mBotHand.mergeCards()) {
+                s = s + c.toString() + " ";
+            }
+            Log.e("BOT HAND: ", s);
+
             // Resolve the round
             mGameState.resolveRound();
 
