@@ -147,7 +147,14 @@ public final class Card {
         return false;
     }
 
-    // TODO: implement hashcode
+    @Override
+    public int hashCode() {
+        // TODO: If theres problems with hash tabling cards, this is probably why.
+        int hash = 37;
+        hash += 17 * mRank.getVal();
+        hash += 19 * mSuit.getRep().hashCode();
+        return hash;
+    }
 
     public Drawable makeDrawable(Context context) {
         Bitmap b = Bitmap.createBitmap(WIDTH, HEIGHT, Bitmap.Config.ARGB_8888);
