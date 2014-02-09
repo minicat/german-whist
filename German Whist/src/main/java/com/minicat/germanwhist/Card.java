@@ -135,7 +135,7 @@ public final class Card {
 
     @Override
     public String toString() {
-        return mSuit.getRep() + " " + mRank.getRep();
+        return mSuit.getRep() + mRank.getRep();
     }
 
     @Override
