@@ -4,5 +4,6 @@
     <string name="app_name">German Whist</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="wins_losses">Wins/Losses</string>
 
 </resources>

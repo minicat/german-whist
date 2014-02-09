@@ -5,13 +5,16 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -165,6 +168,19 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if (id == R.id.show_wins) {
+            // TODO: Make this not a toast, with pretty interface and option to clear history, basically just better UI
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+            int wins = settings.getInt(PREFS_WINS, -1);
+            int games = settings.getInt(PREFS_GAMES, -1);
+            double percentage = wins / (double) games * 100;
+            DecimalFormat df = new DecimalFormat("#.##");
+            Toast toast = Toast.makeText(this, "Wins: " + wins + ", Losses: " + (games - wins) + ", Total: " + games +
+                    "\nWin Percentage: " + df.format(percentage) + "%", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+            toast.show();
+            return true;
+        }
         if (id == R.id.action_settings) {
             return true;
         }

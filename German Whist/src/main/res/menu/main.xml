@@ -4,6 +4,12 @@
     tools:context="com.minicat.germanwhist.MainActivity">
 
     <item
+        android:id="@+id/show_wins"
+        android:title="@string/wins_losses"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
