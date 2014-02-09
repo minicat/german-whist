@@ -1,5 +1,6 @@
 package com.minicat.germanwhist;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -16,6 +17,12 @@ import java.util.LinkedList;
 
 public class MainActivity extends ActionBarActivity {
 
+    /* preferences */
+    public static final String PREFS_NAME = "GermanWhistPrefs";
+    public static final String PREFS_GAMES = "games";
+    public static final String PREFS_WINS = "wins";
+
+
     String TAG = "MainActivity";
 
     HandView mHandView;
@@ -27,6 +34,18 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /* Retrieve win/games count etc*/
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        // If no games yet - set it up
+        if (!settings.contains(PREFS_GAMES)) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt(PREFS_GAMES, 0).putInt(PREFS_WINS, 0).commit();
+            Log.e(TAG, PREFS_NAME + " JUST INITIALISED: " + settings.getInt(PREFS_WINS, -1) + " " + settings.getInt(PREFS_GAMES, -1));
+        } else {
+            Log.e(TAG, PREFS_NAME + " JUST RELOADED: " + settings.getInt(PREFS_WINS, -1) + " " + settings.getInt(PREFS_GAMES, -1));
+        }
+
         setContentView(R.layout.activity_main);
 
         ArrayList<Card> playerCards = new ArrayList<Card>();
@@ -109,7 +128,22 @@ public class MainActivity extends ActionBarActivity {
 
 
         // If game won, have the hand view announce the winner!
-        if (mGameState.mRound > 26) mHandView.gameWon(true, mGameState.mPlayerTricks > 6);
+        if (mGameState.mRound > 26) {
+            boolean playerWonGame = mGameState.mPlayerTricks > 6;
+            mHandView.gameWon(true, playerWonGame);
+
+            // Update count of games
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            int games = settings.getInt(PREFS_GAMES, 0) + 1;
+            int wins = settings.getInt(PREFS_WINS, 0);
+            // increment wins if necessary
+            if (playerWonGame) wins++;
+            editor.remove(PREFS_GAMES).remove(PREFS_WINS).commit();
+            editor.putInt(PREFS_GAMES, games).putInt(PREFS_WINS, wins).commit();
+
+            Log.e(TAG, PREFS_NAME + " JUST UPDATED ON GAME OVER: " + settings.getInt(PREFS_WINS, -1) + " " + settings.getInt(PREFS_GAMES, -1));
+        }
 
         // Redraw
         mHandView.invalidate();
