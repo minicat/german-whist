@@ -39,6 +39,8 @@ public class HandView extends View {
     boolean gameWon = false;
     boolean playerWon;
 
+    Card mHover;
+
 
     // This is how the activity communicates with the hand view. Observer pattern!
     private HandListener mHandListener;
@@ -97,14 +99,21 @@ public class HandView extends View {
         int i = 0, xLeft, xRight;
         for (Map.Entry<Card.Suit, ArrayList<Card>> entry : mGameState.mPlayerHand.mCards.entrySet()) {
             for (Card c : entry.getValue()) {
-                Drawable cardDrawable = c.makeDrawable(getContext());
+                //Drawable cardDrawable = c.makeDrawable(getContext());
                 // x = (int)(i * (cardDrawable.getIntrinsicWidth()) * 2/5);
                 //Log.e(TAG, "getIntrinsicHeight = "+ cardDrawable.getIntrinsicHeight() + " " + cardDrawable.getIntrinsicWidth());
                 //Log.e(TAG, "actual= "+ Card.HEIGHT + " " + Card.WIDTH);
                 // dunno why /12 vs /13....hmm
                 //xLeft = mScreenPadding + (int)(i * (mWidth - mScreenPadding*2 - cardDrawable.getIntrinsicWidth()) / 12);
                 xLeft = mScreenPadding + (int) (i * (mWidth - mScreenPadding * 2 - Card.WIDTH) / 12);
-                drawCard(c, xLeft, mCardsTop, canvas);
+
+                if (c != mHover) {
+                    drawCard(c, xLeft, mCardsTop, canvas);
+                } else {
+                    // Hovering over this card, boost it up.
+                    // TODO: This may break hitbox detection?
+                    drawCard(c, xLeft, mCardsTop - 10, canvas);
+                }
 
                 // IF not last card, then width is less
                 if (i < mGameState.mPlayerHand.size() - 1)
@@ -156,7 +165,7 @@ public class HandView extends View {
         }
 
         // If game over, show winner
-        if (gameWon == true) {
+        if (gameWon) {
             String message = "Game over! Winner: ";
             if (playerWon) message = message + "you! :D";
             else message = message + "Catbot! :3";
@@ -212,17 +221,28 @@ public class HandView extends View {
         }
 
         if (selected != null) {
-            //Log.e(TAG, "Card: " + selected.toString());
+            Log.e(TAG, "Card: " + selected.toString() + " action: " + action);
             switch (action) {
                 case (MotionEvent.ACTION_UP):
                     //Log.e(TAG, "ACTION UP");
                     if (mHandListener != null) {
                         mHandListener.onCardPlayed(selected);
+                        // remember to stop hovering
+                        mHover = null;
                     }
                     return true;
                 case (MotionEvent.ACTION_DOWN):
                     //Log.e(TAG, "Action was DOWN");
-                    // TODO: Highlight current card somehow
+                    // save which card you're hovering over
+                    mHover = selected;
+                    this.invalidate();
+                    return true;
+                // TODO: MAKE THIS REPEAT LESS SHITTY
+                case (MotionEvent.ACTION_MOVE):
+                    //Log.e(TAG, "Action was DOWN");
+                    // save which card you're hovering over
+                    mHover = selected;
+                    this.invalidate();
                     return true;
             /*case (MotionEvent.ACTION_MOVE) :
                 Log.e(TAG,"Action was MOVE");
