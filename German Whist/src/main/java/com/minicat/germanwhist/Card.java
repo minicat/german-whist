@@ -187,4 +187,16 @@ public final class Card {
 
         return new BitmapDrawable(context.getResources(), b);
     }
+
+    public static Drawable cardBackDrawable(Context context) {
+        Bitmap b = Bitmap.createBitmap(WIDTH, HEIGHT, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+
+        // Draw card
+        Paint pCard = new Paint();
+        pCard.setColor(Color.GRAY);
+        c.drawRect(0, 0, WIDTH, HEIGHT, pCard);
+
+        return new BitmapDrawable(context.getResources(), b);
+    }
 }

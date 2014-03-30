@@ -192,6 +192,17 @@ public class HandView extends View {
         // can use card height/width instead
         d.setBounds(x, y, x + d.getIntrinsicWidth(), y + d.getIntrinsicHeight());
         d.draw(canvas);
+
+        // If this card was the last card drawn, have indicator
+        // TODO: animation? MAKE THIS LESS BAD
+        // TODO: inconsistent with way card hovered over is bumped up?
+        if (mGameState.mPreviousTrick != null) {
+            if (mGameState.mPreviousTrick.playerDrew != null) {
+                if (card.equals(mGameState.mPreviousTrick.playerDrew)) {
+                    canvas.drawText("VVV", x, y, mTextPaint);
+                }
+            }
+        }
     }
 
 
