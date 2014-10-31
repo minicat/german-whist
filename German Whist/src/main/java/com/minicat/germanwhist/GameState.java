@@ -2,6 +2,8 @@ package com.minicat.germanwhist;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
 
 /**
@@ -31,6 +33,28 @@ public class GameState {
     int mBotTricks = 0;
 
     String TAG = "GameState";
+
+    /**
+     * This constructor is for a blank gamestate/new game.
+     *
+     * @param playerTurnFirst whose turn is it first?
+     */
+    GameState(boolean playerTurnFirst) {
+
+        ArrayList<Card> playerCards = new ArrayList<Card>();
+        ArrayList<Card> botCards = new ArrayList<Card>();
+        mShownPile = new LinkedList<Card>();
+        mHiddenPile = new LinkedList<Card>();
+
+        Deck deck = new Deck();
+        deck.shuffle();
+        deck.deal(playerCards, botCards, mShownPile, mHiddenPile);
+
+        mPlayerHand = new Hand(playerCards);
+        mBotHand = new Hand(botCards);
+        mTrumps = ((Card) mShownPile.peek()).mSuit; // Requires cast.
+        mPlayerTurn = playerTurnFirst;
+    }
 
     GameState(Hand playerHand, Hand botHand, Queue<Card> shownPile, Queue<Card> hiddenPile,
               boolean playerTurnFirst) {

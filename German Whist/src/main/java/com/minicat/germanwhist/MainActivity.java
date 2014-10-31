@@ -15,8 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -51,20 +49,8 @@ public class MainActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_main);
 
-        ArrayList<Card> playerCards = new ArrayList<Card>();
-        ArrayList<Card> botCards = new ArrayList<Card>();
-        LinkedList<Card> shownPile = new LinkedList<Card>();
-        LinkedList<Card> hiddenPile = new LinkedList<Card>();
-
-        Deck deck = new Deck();
-        deck.shuffle();
-        deck.deal(playerCards, botCards, shownPile, hiddenPile);
-
-        Hand playerHand = new Hand(playerCards);
-        Hand botHand = new Hand(botCards);
-
         // Make game state
-        mGameState = new GameState(playerHand, botHand, shownPile, hiddenPile, true);
+        mGameState = new GameState(true);
 
         mWhistBot = new CatBot(mGameState);
 
@@ -91,6 +77,10 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         } */
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     /**
