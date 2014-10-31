@@ -9,6 +9,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * This is a card.
@@ -71,15 +73,22 @@ public final class Card {
 
 
         // Reverse lookup. http://stackoverflow.com/questions/5316311/java-enum-reverse-look-up-best-practice
-        private static final HashMap<Character, Suit> lookup = new HashMap<Character, Suit>();
+
+        /**private static final HashMap<Character, Suit> lookup = new HashMap<Character, Suit>();
 
         static {
             for (Suit s : values())
                 lookup.put(s.getRep().charAt(0), s);
-        }
+         } */
 
         public static Suit get(char rep) {
-            return lookup.get(rep);
+            for (Suit s : values()) {
+                if (s.getRep().charAt(0) == rep) {
+                    return s;
+                }
+            }
+            // couldnt find it
+            return null;
         }
     }
 
@@ -140,17 +149,20 @@ public final class Card {
      * Reverses toString. For saving stuff.
      */
     public Card(String string) {
+        this.mSuit = Suit.get(string.charAt(0));
         // check that its 2 character string
-        if (string.length() != 2) {
-            mSuit = Suit.get(string.charAt(0));
-            mRank = Rank.get(string.charAt(1));
+        if (string.length() == 2) {
+            this.mRank = Rank.get(string.charAt(1));
+        } else {
+            // its a 10 TODO MAKE THIS BETTER ARGH
+            this.mRank = Rank.TEN;
         }
     }
 
 
     public Card(Suit suit, Rank rank) {
-        mSuit = suit;
-        mRank = rank;
+        this.mSuit = suit;
+        this.mRank = rank;
     }
 
     @Override
@@ -218,5 +230,25 @@ public final class Card {
         c.drawRect(0, 0, WIDTH, HEIGHT, pCard);
 
         return new BitmapDrawable(context.getResources(), b);
+    }
+
+    // TODO TESTS
+    public static LinkedList<Card> listFromString(String saved) {
+        LinkedList<Card> list = new LinkedList<Card>();
+        String[] cards = saved.split(" ");
+        Card card;
+        for (String c : cards) {
+            card = new Card(c);
+            list.add(card);
+        }
+        return list;
+    }
+
+    public static String listToString(Queue<Card> cards) {
+        String str = "";
+        for (Card c : cards) {
+            str += c.toString() + " ";
+        }
+        return str.trim();
     }
 }

@@ -30,7 +30,6 @@ public class GameState {
 
     int mRound = 1;
     int mPlayerTricks = 0;
-    int mBotTricks = 0;
 
     String TAG = "GameState";
 
@@ -165,12 +164,27 @@ public class GameState {
 
     }
 
-    class Trick {
+    public static class Trick {
         Card first;
         Card second;
         boolean playerFirst;
         boolean playerWon;
         Card playerDrew;
+
+        /**
+         * Opposite of toString.
+         *
+         * @param saved
+         */
+        Trick(String saved) {
+            // todo needs tests for this and toString
+            String[] parts = saved.split(" ");
+            this.first = new Card(parts[0]);
+            this.second = new Card(parts[1]);
+            this.playerFirst = Boolean.parseBoolean(parts[2]);
+            this.playerWon = Boolean.parseBoolean(parts[3]);
+            this.playerDrew = new Card(parts[4]);
+        }
 
         Trick(Card first, Card second, boolean playerFirst, boolean playerWon) {
             this.first = first;
@@ -182,5 +196,19 @@ public class GameState {
         public void setPlayerDrew(Card playerDrew) {
             this.playerDrew = playerDrew;
         }
+
+        @Override
+        public String toString() {
+            String str = "";
+            String space = " ";
+            // TODO make this less terrible
+            str += first.toString() + space;
+            str += second.toString() + space;
+            str += playerFirst + space;
+            str += playerWon + space;
+            str += playerDrew.toString();
+            return str;
+        }
+
     }
 }

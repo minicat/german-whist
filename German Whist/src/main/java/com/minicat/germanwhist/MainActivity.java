@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
+import java.util.LinkedList;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -49,8 +50,22 @@ public class MainActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_main);
 
-        // Make game state
-        mGameState = new GameState(true);
+        // Make game state / attempt to load old
+        if (savedInstanceState != null) {
+            // TODO these should probably be constants, sigh
+            // Get the card piles.
+            Hand playerHand = new Hand(savedInstanceState.getString("playerHand"));
+            Hand botHand = new Hand(savedInstanceState.getString("botHand"));
+            LinkedList<Card> shownPile = Card.listFromString(savedInstanceState.getString("shownPile"));
+            LinkedList<Card> hiddenPile = Card.listFromString(savedInstanceState.getString("hiddenPile"));
+            mGameState = new GameState(playerHand, botHand, shownPile, hiddenPile, true);
+            // Set round and tricks
+            mGameState.mRound = savedInstanceState.getInt("round");
+            mGameState.mPlayerTricks = savedInstanceState.getInt("playerTricks");
+            mGameState.mPreviousTrick = new GameState.Trick(savedInstanceState.getString("previousTrick"));
+        } else {
+            mGameState = new GameState(true);
+        }
 
         mWhistBot = new CatBot(mGameState);
 
@@ -81,6 +96,15 @@ public class MainActivity extends ActionBarActivity {
 
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+        // Save cards
+        savedInstanceState.putString("playerHand", mGameState.mPlayerHand.toString());
+        savedInstanceState.putString("botHand", mGameState.mBotHand.toString());
+        savedInstanceState.putString("shownPile", Card.listToString(mGameState.mShownPile));
+        savedInstanceState.putString("hiddenPile", Card.listToString(mGameState.mHiddenPile));
+        // Save round and tricks
+        savedInstanceState.putInt("round", mGameState.mRound);
+        savedInstanceState.putInt("playerTricks", mGameState.mPlayerTricks);
+        savedInstanceState.putString("previousTrick", mGameState.mPreviousTrick.toString());
     }
 
     /**

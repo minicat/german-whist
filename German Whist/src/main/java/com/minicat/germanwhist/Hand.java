@@ -30,6 +30,7 @@ public class Hand {
      * @param saved String format
      */
     Hand(String saved) {
+        initMap();
         String[] cards = saved.split(" ");
         Card card;
         for (String c : cards) {
