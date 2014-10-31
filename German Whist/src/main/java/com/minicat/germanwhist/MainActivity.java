@@ -62,7 +62,10 @@ public class MainActivity extends ActionBarActivity {
             // Set round and tricks
             mGameState.mRound = savedInstanceState.getInt("round");
             mGameState.mPlayerTricks = savedInstanceState.getInt("playerTricks");
-            mGameState.mPreviousTrick = new GameState.Trick(savedInstanceState.getString("previousTrick"));
+            // If its right at the start, it might not have a previous trick.
+            if (savedInstanceState.containsKey("previousTrick")) {
+                mGameState.mPreviousTrick = new GameState.Trick(savedInstanceState.getString("previousTrick"));
+            }
         } else {
             mGameState = new GameState(true);
         }
@@ -104,7 +107,9 @@ public class MainActivity extends ActionBarActivity {
         // Save round and tricks
         savedInstanceState.putInt("round", mGameState.mRound);
         savedInstanceState.putInt("playerTricks", mGameState.mPlayerTricks);
-        savedInstanceState.putString("previousTrick", mGameState.mPreviousTrick.toString());
+        if (mGameState.mPreviousTrick != null) {
+            savedInstanceState.putString("previousTrick", mGameState.mPreviousTrick.toString());
+        }
     }
 
     /**
@@ -194,10 +199,15 @@ public class MainActivity extends ActionBarActivity {
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
             return true;
-        }
-        if (id == R.id.action_settings) {
+        } else if (id == R.id.action_settings) {
             // TODO: Change card order, for one
             return true;
+        } else if (id == R.id.menu_new_game) {
+            // new state, refresh.
+            // TODO: "abandoned games" stat?
+            mGameState = new GameState(true);
+            mHandView.mGameState = mGameState;
+            mHandView.invalidate();
         }
         return super.onOptionsItemSelected(item);
     }
