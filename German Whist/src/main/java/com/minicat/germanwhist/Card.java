@@ -8,6 +8,8 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import java.util.HashMap;
+
 /**
  * This is a card.
  * <p/>
@@ -66,6 +68,19 @@ public final class Card {
         private CardColor getCardColor() {
             return color;
         }
+
+
+        // Reverse lookup. http://stackoverflow.com/questions/5316311/java-enum-reverse-look-up-best-practice
+        private static final HashMap<Character, Suit> lookup = new HashMap<Character, Suit>();
+
+        static {
+            for (Suit s : values())
+                lookup.put(s.getRep().charAt(0), s);
+        }
+
+        public static Suit get(char rep) {
+            return lookup.get(rep);
+        }
     }
 
     /*
@@ -102,6 +117,18 @@ public final class Card {
         int getVal() {
             return val;
         }
+
+        // Reverse lookup.
+        private static final HashMap<Character, Rank> lookup = new HashMap<Character, Rank>();
+
+        static {
+            for (Rank r : values())
+                lookup.put(r.getRep().charAt(0), r);
+        }
+
+        public static Rank get(char rep) {
+            return lookup.get(rep);
+        }
     }
 
 
@@ -109,28 +136,21 @@ public final class Card {
 
     Rank mRank;
 
+    /**
+     * Reverses toString. For saving stuff.
+     */
+    public Card(String string) {
+        // check that its 2 character string
+        if (string.length() != 2) {
+            mSuit = Suit.get(string.charAt(0));
+            mRank = Rank.get(string.charAt(1));
+        }
+    }
+
 
     public Card(Suit suit, Rank rank) {
         mSuit = suit;
         mRank = rank;
-
-        //Log.e("Card", mSuit.getRep() + " " + mRank.getRep());
-
-        // Want to draw card using Suit and Rank
-        Bitmap b = Bitmap.createBitmap(WIDTH, HEIGHT, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-
-        // Create paint depending on color
-        Paint p = new Paint();
-        // this is so stupid
-        p.setColor(suit.getCardColor().getColor());
-        p.setTextSize(60);
-        p.setTextAlign(Paint.Align.CENTER);
-        String text = rank.getRep() + " " + suit.getRep();
-
-        c.drawText(text, WIDTH / 2, HEIGHT / 2 + 15, p);
-
-        //this.setImageBitmap(b);
     }
 
     @Override

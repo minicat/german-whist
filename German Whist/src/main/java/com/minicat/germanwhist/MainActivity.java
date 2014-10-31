@@ -90,7 +90,7 @@ public class MainActivity extends ActionBarActivity {
      */
     void playCard(Card card) {
         Log.e(TAG, card.toString());
-
+        // TODO Refactor into gameState.playCard or something
         // Is this an invalid play?
 
         if (!mGameState.mPlayerTurn && !mGameState.isValidPlay(card)) {
@@ -172,6 +172,7 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         if (id == R.id.action_settings) {
+            // TODO: Change card order, for one
             return true;
         }
         return super.onOptionsItemSelected(item);

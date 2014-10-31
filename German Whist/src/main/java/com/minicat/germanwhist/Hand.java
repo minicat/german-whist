@@ -15,14 +15,32 @@ import java.util.Map;
 public class Hand {
     Map<Card.Suit, ArrayList<Card>> mCards;
 
-
-    Hand(ArrayList<Card> cards) {
+    private void initMap() {
         // Initialise all the suit arraylists
         mCards = new HashMap<Card.Suit, ArrayList<Card>>();
         mCards.put(Card.Suit.DIAMONDS, new ArrayList<Card>());
         mCards.put(Card.Suit.CLUBS, new ArrayList<Card>());
         mCards.put(Card.Suit.HEARTS, new ArrayList<Card>());
         mCards.put(Card.Suit.SPADES, new ArrayList<Card>());
+    }
+
+    /**
+     * Constructs from saved Hand.
+     *
+     * @param saved String format
+     */
+    Hand(String saved) {
+        String[] cards = saved.split(" ");
+        Card card;
+        for (String c : cards) {
+            card = new Card(c);
+            mCards.get(card.mSuit).add(card);
+        }
+        sort();
+    }
+
+    Hand(ArrayList<Card> cards) {
+        initMap();
 
         // Assign cards based on suit
         for (Card c : cards) {
@@ -72,11 +90,9 @@ public class Hand {
     public String toString() {
         String s = "";
         for (Map.Entry<Card.Suit, ArrayList<Card>> entry : mCards.entrySet()) {
-            s = s + entry.getKey() + ": ";
             for (Card c : entry.getValue()) {
                 s = s + c.toString() + " ";
             }
-            s = s + "\n";
         }
         return s;
     }
