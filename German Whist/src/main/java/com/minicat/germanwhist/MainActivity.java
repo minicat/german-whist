@@ -195,15 +195,25 @@ public class MainActivity extends ActionBarActivity {
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
             int wins = settings.getInt(PREFS_WINS, -1);
             int games = settings.getInt(PREFS_GAMES, -1);
+            int forfeit = settings.getInt(PREFS_FORFEIT, -1);
             double percentage = wins / (double) games * 100;
             DecimalFormat df = new DecimalFormat("#.##");
-            Toast toast = Toast.makeText(this, "Wins: " + wins + ", Losses: " + (games - wins) + ", Total: " + games +
-                    "\nWin Percentage: " + df.format(percentage) + "%", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
-            toast.show();
+            String text = "You have " + wins + " wins and " + (games - wins) + " losses." +
+                    "\nWin Percentage: " + df.format(percentage) +
+                    "%\nGames Completed: " + games + "\nGames Forfeited: " + forfeit;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(text).setTitle(R.string.wins_losses);
+            builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // do nothing
+                    // TODO: can you just remove the onclicks?
+                }
+            });
+            builder.show();
             return true;
         } else if (id == R.id.action_settings) {
-            // TODO: Change card order, for one
+            // TODO: Change card order, reset statistics
             return true;
         } else if (id == R.id.menu_new_game) {
             // Create dialog
