@@ -1,5 +1,7 @@
 package com.minicat.germanwhist;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -23,6 +25,7 @@ public class MainActivity extends ActionBarActivity {
     public static final String PREFS_NAME = "GermanWhistPrefs";
     public static final String PREFS_GAMES = "games";
     public static final String PREFS_WINS = "wins";
+    public static final String PREFS_FORFEIT = "forfeit";
 
 
     String TAG = "MainActivity";
@@ -42,10 +45,10 @@ public class MainActivity extends ActionBarActivity {
         // If no games yet - set it up
         if (!settings.contains(PREFS_GAMES)) {
             SharedPreferences.Editor editor = settings.edit();
-            editor.putInt(PREFS_GAMES, 0).putInt(PREFS_WINS, 0).commit();
+            editor.putInt(PREFS_GAMES, 0).putInt(PREFS_WINS, 0).putInt(PREFS_FORFEIT, 0).commit();
             Log.e(TAG, PREFS_NAME + " JUST INITIALISED: " + settings.getInt(PREFS_WINS, -1) + " " + settings.getInt(PREFS_GAMES, -1));
         } else {
-            Log.e(TAG, PREFS_NAME + " JUST RELOADED: " + settings.getInt(PREFS_WINS, -1) + " " + settings.getInt(PREFS_GAMES, -1));
+            Log.e(TAG, PREFS_NAME + " JUST RELOADED: " + settings.getInt(PREFS_WINS, -1) + " " + settings.getInt(PREFS_GAMES, -1) + " " + settings.getInt(PREFS_FORFEIT, 0));
         }
 
         setContentView(R.layout.activity_main);
@@ -203,11 +206,32 @@ public class MainActivity extends ActionBarActivity {
             // TODO: Change card order, for one
             return true;
         } else if (id == R.id.menu_new_game) {
-            // new state, refresh.
-            // TODO: "abandoned games" stat?
-            mGameState = new GameState(true);
-            mHandView.mGameState = mGameState;
-            mHandView.invalidate();
+            // Create dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Are you sure?").setTitle("New Game");
+            // Add the buttons
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked OK button, restart the game, add to abandoned
+                    mGameState = new GameState(true);
+                    mHandView.mGameState = mGameState;
+                    mHandView.invalidate();
+
+                    // stats
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                    int forfeits = settings.getInt(PREFS_FORFEIT, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putInt(PREFS_FORFEIT, forfeits + 1).apply();
+                    // TODO Closing the app and reopening restarts without forfeit.
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User cancelled the dialog, do nothing
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
         return super.onOptionsItemSelected(item);
     }
