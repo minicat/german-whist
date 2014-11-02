@@ -208,21 +208,26 @@ public class MainActivity extends ActionBarActivity {
         } else if (id == R.id.menu_new_game) {
             // Create dialog
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Are you sure?").setTitle("New Game");
+            builder.setMessage("Are you sure? \nWill count as a forfeit if past round 13.").setTitle("New Game");
             // Add the buttons
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            String positiveText = "Abandon";
+            if (mGameState.mRound > 13) positiveText = "Forfeit";
+            builder.setPositiveButton("Ok - " + positiveText, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    // User clicked OK button, restart the game, add to abandoned
+                    // User clicked OK button
+                    // stats if in 2nd phase
+                    if (mGameState.mRound > 13) {
+                        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                        int forfeits = settings.getInt(PREFS_FORFEIT, 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putInt(PREFS_FORFEIT, forfeits + 1).apply();
+                    }
+                    // TODO Closing the app and reopening restarts without forfeit.
+
+                    // new game state
                     mGameState = new GameState(true);
                     mHandView.mGameState = mGameState;
                     mHandView.invalidate();
-
-                    // stats
-                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                    int forfeits = settings.getInt(PREFS_FORFEIT, 0);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putInt(PREFS_FORFEIT, forfeits + 1).apply();
-                    // TODO Closing the app and reopening restarts without forfeit.
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
