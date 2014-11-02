@@ -69,6 +69,11 @@ public class MainActivity extends ActionBarActivity {
             if (savedInstanceState.containsKey("previousTrick")) {
                 mGameState.mPreviousTrick = new GameState.Trick(savedInstanceState.getString("previousTrick"));
             }
+            // Load turn, what computer played
+            mGameState.mPlayerTurn = savedInstanceState.getBoolean("playerTurn");
+            if (!mGameState.mPlayerTurn) {
+                mGameState.mFirstPlayed = new Card(savedInstanceState.getString("firstPlayed"));
+            }
         } else {
             mGameState = new GameState(true);
         }
@@ -112,6 +117,11 @@ public class MainActivity extends ActionBarActivity {
         savedInstanceState.putInt("playerTricks", mGameState.mPlayerTricks);
         if (mGameState.mPreviousTrick != null) {
             savedInstanceState.putString("previousTrick", mGameState.mPreviousTrick.toString());
+        }
+        // If it isnt the players turn, save what card the bot played
+        savedInstanceState.putBoolean("playerTurn", mGameState.mPlayerTurn);
+        if (!mGameState.mPlayerTurn) {
+            savedInstanceState.putString("firstPlayed", mGameState.mFirstPlayed.toString());
         }
     }
 
