@@ -2,6 +2,7 @@ package com.minicat.germanwhist;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -21,13 +22,6 @@ import java.util.LinkedList;
 
 public class MainActivity extends ActionBarActivity {
 
-    /* preferences */
-    public static final String PREFS_NAME = "GermanWhistPrefs";
-    public static final String PREFS_GAMES = "games";
-    public static final String PREFS_WINS = "wins";
-    public static final String PREFS_FORFEIT = "forfeit";
-
-
     String TAG = "MainActivity";
 
     HandView mHandView;
@@ -41,14 +35,10 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         /* Retrieve win/games count etc*/
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(StatsHelper.PREFS_NAME, 0);
         // If no games yet - set it up
-        if (!settings.contains(PREFS_GAMES)) {
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putInt(PREFS_GAMES, 0).putInt(PREFS_WINS, 0).putInt(PREFS_FORFEIT, 0).commit();
-            Log.e(TAG, PREFS_NAME + " JUST INITIALISED: " + settings.getInt(PREFS_WINS, -1) + " " + settings.getInt(PREFS_GAMES, -1));
-        } else {
-            Log.e(TAG, PREFS_NAME + " JUST RELOADED: " + settings.getInt(PREFS_WINS, -1) + " " + settings.getInt(PREFS_GAMES, -1) + " " + settings.getInt(PREFS_FORFEIT, 0));
+        if (!settings.contains(StatsHelper.PREFS_GAMES)) {
+            StatsHelper.resetStats(settings);
         }
 
         setContentView(R.layout.activity_main);
@@ -168,21 +158,15 @@ public class MainActivity extends ActionBarActivity {
             mHandView.gameWon(true, playerWonGame);
 
             // Update count of games
-            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-            SharedPreferences.Editor editor = settings.edit();
-            int games = settings.getInt(PREFS_GAMES, 0) + 1;
-            int wins = settings.getInt(PREFS_WINS, 0);
+            SharedPreferences settings = getSharedPreferences(StatsHelper.PREFS_NAME, 0);
             // increment wins if necessary
-            if (playerWonGame) wins++;
-            editor.remove(PREFS_GAMES).remove(PREFS_WINS).commit();
-            editor.putInt(PREFS_GAMES, games).putInt(PREFS_WINS, wins).commit();
-
-            Log.e(TAG, PREFS_NAME + " JUST UPDATED ON GAME OVER: " + settings.getInt(PREFS_WINS, -1) + " " + settings.getInt(PREFS_GAMES, -1));
+            if (playerWonGame) StatsHelper.incrementCount(settings, StatsHelper.PREFS_WINS);
+            // increment games
+            StatsHelper.incrementCount(settings, StatsHelper.PREFS_GAMES);
         }
 
         // Redraw
         mHandView.invalidate();
-
 
     }
 
@@ -202,10 +186,10 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
         if (id == R.id.show_wins) {
             // TODO: Make this not a toast, with pretty interface and option to clear history, basically just better UI
-            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-            int wins = settings.getInt(PREFS_WINS, -1);
-            int games = settings.getInt(PREFS_GAMES, -1);
-            int forfeit = settings.getInt(PREFS_FORFEIT, -1);
+            SharedPreferences settings = getSharedPreferences(StatsHelper.PREFS_NAME, 0);
+            int wins = settings.getInt(StatsHelper.PREFS_WINS, -1);
+            int games = settings.getInt(StatsHelper.PREFS_GAMES, -1);
+            int forfeit = settings.getInt(StatsHelper.PREFS_FORFEIT, -1);
             double percentage = wins / (double) games * 100;
             DecimalFormat df = new DecimalFormat("#.##");
             String text = "You have " + wins + " wins and " + (games - wins) + " losses." +
@@ -224,6 +208,8 @@ public class MainActivity extends ActionBarActivity {
             return true;
         } else if (id == R.id.action_settings) {
             // TODO: Change card order, reset statistics
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         } else if (id == R.id.menu_new_game) {
             // Create dialog
@@ -237,10 +223,8 @@ public class MainActivity extends ActionBarActivity {
                     // User clicked OK button
                     // stats if in 2nd phase
                     if (mGameState.mRound > 13) {
-                        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                        int forfeits = settings.getInt(PREFS_FORFEIT, 0);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putInt(PREFS_FORFEIT, forfeits + 1).apply();
+                        SharedPreferences settings = getSharedPreferences(StatsHelper.PREFS_NAME, 0);
+                        StatsHelper.incrementCount(settings, StatsHelper.PREFS_FORFEIT);
                     }
                     // TODO Closing the app and reopening restarts without forfeit.
 
