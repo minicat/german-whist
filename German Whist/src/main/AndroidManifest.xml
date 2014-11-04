@@ -19,6 +19,10 @@
         <activity
             android:name="com.minicat.germanwhist.SettingsActivity"
             android:label="@string/action_settings" />
+        <activity
+            android:name="com.minicat.germanwhist.HelpActivity"
+            android:label="@string/rules_title"
+            android:theme="@android:style/android:Theme.Holo.Light.Dialog" />
     </application>
 
 </manifest>

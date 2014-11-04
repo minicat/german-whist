@@ -4,14 +4,20 @@
     tools:context="com.minicat.germanwhist.MainActivity">
 
     <item
-        android:id="@+id/show_wins"
-        android:title="@string/wins_losses"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+        android:id="@+id/menu_help"
+        android:icon="@drawable/ic_menu_help"
+        android:title="@string/action_help"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_new_game"
         android:title="@string/menu_new_game"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_show_wins"
+        android:title="@string/wins_losses"
         android:orderInCategory="100"
         app:showAsAction="never" />
 

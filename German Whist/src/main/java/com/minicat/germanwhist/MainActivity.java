@@ -200,7 +200,11 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.show_wins) {
+        if (id == R.id.menu_help) {
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.menu_show_wins) {
             SharedPreferences settings = getSharedPreferences(StatsHelper.PREFS_NAME, 0);
             int wins = settings.getInt(StatsHelper.PREFS_WINS, -1);
             int games = settings.getInt(StatsHelper.PREFS_GAMES, -1);
@@ -223,7 +227,6 @@ public class MainActivity extends ActionBarActivity {
             builder.show();
             return true;
         } else if (id == R.id.action_settings) {
-            // TODO: Change card order, reset statistics
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
