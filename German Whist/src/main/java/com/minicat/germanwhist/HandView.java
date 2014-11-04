@@ -41,6 +41,7 @@ public class HandView extends View {
 
     Card mHover;
 
+    String mSuitOrder;
 
     // This is how the activity communicates with the hand view. Observer pattern!
     private HandListener mHandListener;
@@ -96,9 +97,21 @@ public class HandView extends View {
         mCardsTop = mHeight - mScreenPadding - Card.HEIGHT;
         mCardsBottom = mHeight - mScreenPadding;
 
+        // Determine order to draw cards in.
+        if (mSuitOrder == null) {
+            // this generally shouldn't be an  issue, but just in case
+            mSuitOrder = "♠♥♣♦"; //accessing string resources from here is meh
+        }
+        ArrayList<Card.Suit> order = new ArrayList<Card.Suit>();
+        for (int i = 0; i < mSuitOrder.length(); i++) {
+            order.add(Card.Suit.get(mSuitOrder.charAt(i)));
+        }
+
+
         int i = 0, xLeft, xRight;
-        for (Map.Entry<Card.Suit, ArrayList<Card>> entry : mGameState.mPlayerHand.mCards.entrySet()) {
-            for (Card c : entry.getValue()) {
+        for (int j = 0; j < order.size(); j++) {
+            ArrayList<Card> entry = mGameState.mPlayerHand.mCards.get(order.get(j));
+            for (Card c : entry) {
                 //Drawable cardDrawable = c.makeDrawable(getContext());
                 // x = (int)(i * (cardDrawable.getIntrinsicWidth()) * 2/5);
                 //Log.e(TAG, "getIntrinsicHeight = "+ cardDrawable.getIntrinsicHeight() + " " + cardDrawable.getIntrinsicWidth());

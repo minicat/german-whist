@@ -8,6 +8,6 @@
     <string name="menu_new_game">New Game</string>
     <string name="pref_reset">resetStats</string>
     <string name="pref_order">suitOrder</string>>
-    <string name="default_suit_order">SHCD</string>
+    <string name="default_suit_order">♠♥♣♦</string>
 
 </resources>

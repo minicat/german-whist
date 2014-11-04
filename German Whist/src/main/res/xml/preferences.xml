@@ -2,9 +2,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
         android:key="@string/pref_order"
-        android:title="Suit Order"
+        android:title="Change Displayed Suit Order"
         android:summary="Cosmetic only. Doesn't affect trumps."
-        android:dialogTitle="Suit Order"
+        android:dialogTitle="Change Displayed Suit Order"
         android:entries="@array/SuitOrders"
         android:entryValues="@array/SuitOrderValues"
         android:defaultValue="@string/default_suit_order" />
