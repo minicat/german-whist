@@ -190,12 +190,12 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.show_wins) {
-            // TODO: Make this not a toast, with pretty interface and option to clear history, basically just better UI
             SharedPreferences settings = getSharedPreferences(StatsHelper.PREFS_NAME, 0);
             int wins = settings.getInt(StatsHelper.PREFS_WINS, -1);
             int games = settings.getInt(StatsHelper.PREFS_GAMES, -1);
             int forfeit = settings.getInt(StatsHelper.PREFS_FORFEIT, -1);
             double percentage = wins / (double) games * 100;
+            if (games == 0) percentage = 0;
             DecimalFormat df = new DecimalFormat("#.##");
             String text = "You have " + wins + " wins and " + (games - wins) + " losses." +
                     "\nWin Percentage: " + df.format(percentage) +
