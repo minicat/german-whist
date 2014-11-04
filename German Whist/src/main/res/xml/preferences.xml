@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="@string/pref_order"
+        android:title="Suit Order"
+        android:summary="Cosmetic only. Doesn't affect trumps."
+        android:dialogTitle="Suit Order"
+        android:entries="@array/SuitOrders"
+        android:entryValues="@array/SuitOrderValues"
+        android:defaultValue="@string/default_suit_order" />
     <com.minicat.germanwhist.ResetDialogPreference
         android:key="@string/pref_reset"
         android:title="Reset Statistics"

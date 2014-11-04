@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="SuitOrders">
+        <item>♠ ♥ ♣ ♦ [Big 2]</item>
+        <item>♠ ♥ ♦ ♣ [Bridge]</item>
+        <item>♥ ♦ ♣ ♠ [500]</item>
+    </string-array>
+    <string-array name="SuitOrderValues">
+        <item>@string/default_suit_order</item>
+        <item>SHDC</item>
+        <item>HDCS</item>
+    </string-array>
+</resources>
