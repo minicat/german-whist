@@ -44,28 +44,30 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         // Make game state / attempt to load old
+        mGameState = new GameState(true);
         if (savedInstanceState != null) {
-            // TODO these should probably be constants, sigh
-            // Get the card piles.
-            Hand playerHand = new Hand(savedInstanceState.getString("playerHand"));
-            Hand botHand = new Hand(savedInstanceState.getString("botHand"));
-            LinkedList<Card> shownPile = Card.listFromString(savedInstanceState.getString("shownPile"));
-            LinkedList<Card> hiddenPile = Card.listFromString(savedInstanceState.getString("hiddenPile"));
-            mGameState = new GameState(playerHand, botHand, shownPile, hiddenPile, true);
-            // Set round and tricks
-            mGameState.mRound = savedInstanceState.getInt("round");
-            mGameState.mPlayerTricks = savedInstanceState.getInt("playerTricks");
-            // If its right at the start, it might not have a previous trick.
-            if (savedInstanceState.containsKey("previousTrick")) {
-                mGameState.mPreviousTrick = new GameState.Trick(savedInstanceState.getString("previousTrick"));
+            // check.
+            if (savedInstanceState.containsKey("playerHand")) {
+                // TODO these should probably be constants, sigh
+                // Get the card piles.
+                Hand playerHand = new Hand(savedInstanceState.getString("playerHand"));
+                Hand botHand = new Hand(savedInstanceState.getString("botHand"));
+                LinkedList<Card> shownPile = Card.listFromString(savedInstanceState.getString("shownPile"));
+                LinkedList<Card> hiddenPile = Card.listFromString(savedInstanceState.getString("hiddenPile"));
+                mGameState = new GameState(playerHand, botHand, shownPile, hiddenPile, true);
+                // Set round and tricks
+                mGameState.mRound = savedInstanceState.getInt("round");
+                mGameState.mPlayerTricks = savedInstanceState.getInt("playerTricks");
+                // If its right at the start, it might not have a previous trick.
+                if (savedInstanceState.containsKey("previousTrick")) {
+                    mGameState.mPreviousTrick = new GameState.Trick(savedInstanceState.getString("previousTrick"));
+                }
+                // Load turn, what computer played
+                mGameState.mPlayerTurn = savedInstanceState.getBoolean("playerTurn");
+                if (!mGameState.mPlayerTurn) {
+                    mGameState.mFirstPlayed = new Card(savedInstanceState.getString("firstPlayed"));
+                }
             }
-            // Load turn, what computer played
-            mGameState.mPlayerTurn = savedInstanceState.getBoolean("playerTurn");
-            if (!mGameState.mPlayerTurn) {
-                mGameState.mFirstPlayed = new Card(savedInstanceState.getString("firstPlayed"));
-            }
-        } else {
-            mGameState = new GameState(true);
         }
 
         mWhistBot = new CatBot(mGameState);
@@ -97,21 +99,24 @@ public class MainActivity extends ActionBarActivity {
 
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        // Save cards
-        savedInstanceState.putString("playerHand", mGameState.mPlayerHand.toString());
-        savedInstanceState.putString("botHand", mGameState.mBotHand.toString());
-        savedInstanceState.putString("shownPile", Card.listToString(mGameState.mShownPile));
-        savedInstanceState.putString("hiddenPile", Card.listToString(mGameState.mHiddenPile));
-        // Save round and tricks
-        savedInstanceState.putInt("round", mGameState.mRound);
-        savedInstanceState.putInt("playerTricks", mGameState.mPlayerTricks);
-        if (mGameState.mPreviousTrick != null) {
-            savedInstanceState.putString("previousTrick", mGameState.mPreviousTrick.toString());
-        }
-        // If it isnt the players turn, save what card the bot played
-        savedInstanceState.putBoolean("playerTurn", mGameState.mPlayerTurn);
-        if (!mGameState.mPlayerTurn) {
-            savedInstanceState.putString("firstPlayed", mGameState.mFirstPlayed.toString());
+        // Only bother saving if game not over
+        if (mGameState.mRound <= 26) {
+            // Save cards
+            savedInstanceState.putString("playerHand", mGameState.mPlayerHand.toString());
+            savedInstanceState.putString("botHand", mGameState.mBotHand.toString());
+            savedInstanceState.putString("shownPile", Card.listToString(mGameState.mShownPile));
+            savedInstanceState.putString("hiddenPile", Card.listToString(mGameState.mHiddenPile));
+            // Save round and tricks
+            savedInstanceState.putInt("round", mGameState.mRound);
+            savedInstanceState.putInt("playerTricks", mGameState.mPlayerTricks);
+            if (mGameState.mPreviousTrick != null) {
+                savedInstanceState.putString("previousTrick", mGameState.mPreviousTrick.toString());
+            }
+            // If it isnt the players turn, save what card the bot played
+            savedInstanceState.putBoolean("playerTurn", mGameState.mPlayerTurn);
+            if (!mGameState.mPlayerTurn) {
+                savedInstanceState.putString("firstPlayed", mGameState.mFirstPlayed.toString());
+            }
         }
     }
 
