@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference
-        class="com.minicat.germanwhist.SettingsActivity$ResetDialogPreference"
+    <com.minicat.germanwhist.ResetDialogPreference
         android:key="@string/pref_reset"
         android:title="Reset Statistics"
         android:dialogTitle="Reset Statistics"

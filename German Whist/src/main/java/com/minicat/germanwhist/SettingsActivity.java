@@ -1,16 +1,10 @@
 package com.minicat.germanwhist;
 
 import android.app.ActionBar;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.DialogPreference;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.util.AttributeSet;
 import android.view.MenuItem;
-import android.view.View;
 
 public class SettingsActivity extends PreferenceActivity {
     SharedPreferences mPrefs;
@@ -37,30 +31,6 @@ public class SettingsActivity extends PreferenceActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    public static class ResetDialogPreference extends DialogPreference {
-        public ResetDialogPreference(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        @Override
-        protected void onDialogClosed(boolean positiveResult) {
-            super.onDialogClosed(positiveResult);
-            persistBoolean(positiveResult);
-        }
-
-        @Override
-        protected void onBindDialogView(View view) {
-            super.onBindDialogView(view);
-        }
-
-        // Handle OK.
-        public void onClick(DialogInterface dialog, int which) {
-            if (which == DialogInterface.BUTTON_POSITIVE) {
-                //StatsHelper.resetStats(mPrefs);
-            }
         }
     }
 }
