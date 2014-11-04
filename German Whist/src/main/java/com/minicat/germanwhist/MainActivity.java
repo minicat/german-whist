@@ -205,63 +205,73 @@ public class MainActivity extends ActionBarActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.menu_show_wins) {
-            SharedPreferences settings = getSharedPreferences(StatsHelper.PREFS_NAME, 0);
-            int wins = settings.getInt(StatsHelper.PREFS_WINS, -1);
-            int games = settings.getInt(StatsHelper.PREFS_GAMES, -1);
-            int forfeit = settings.getInt(StatsHelper.PREFS_FORFEIT, -1);
-            double percentage = wins / (double) games * 100;
-            if (games == 0) percentage = 0;
-            DecimalFormat df = new DecimalFormat("#.##");
-            String text = "You have " + wins + " wins and " + (games - wins) + " losses." +
-                    "\nWin Percentage: " + df.format(percentage) +
-                    "%\nGames Completed: " + games + "\nGames Forfeited: " + forfeit;
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(text).setTitle(R.string.wins_losses);
-            builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // do nothing
-                    // TODO: can you just remove the onclicks?
-                }
-            });
-            builder.show();
+            showStats();
             return true;
         } else if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
         } else if (id == R.id.menu_new_game) {
-            // Create dialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Are you sure? \nWill count as a forfeit if past round 13.").setTitle("New Game");
-            // Add the buttons
-            String positiveText = "Abandon";
-            if (mGameState.mRound > 13) positiveText = "Forfeit";
-            builder.setPositiveButton("Ok - " + positiveText, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked OK button
-                    // stats if in 2nd phase
-                    if (mGameState.mRound > 13) {
-                        SharedPreferences settings = getSharedPreferences(StatsHelper.PREFS_NAME, 0);
-                        StatsHelper.incrementCount(settings, StatsHelper.PREFS_FORFEIT);
-                    }
-                    // TODO Closing the app and reopening restarts without forfeit.
-
-                    // new game state
-                    mGameState = new GameState(true);
-                    mHandView.mGameState = mGameState;
-                    mHandView.invalidate();
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User cancelled the dialog, do nothing
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
+            // Delegate.
+            newGame();
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showStats() {
+        SharedPreferences settings = getSharedPreferences(StatsHelper.PREFS_NAME, 0);
+        int wins = settings.getInt(StatsHelper.PREFS_WINS, -1);
+        int games = settings.getInt(StatsHelper.PREFS_GAMES, -1);
+        int forfeit = settings.getInt(StatsHelper.PREFS_FORFEIT, -1);
+        double percentage = wins / (double) games * 100;
+        if (games == 0) percentage = 0;
+        DecimalFormat df = new DecimalFormat("#.##");
+        String text = "You have " + wins + " wins and " + (games - wins) + " losses." +
+                "\nWin Percentage: " + df.format(percentage) +
+                "%\nGames Completed: " + games + "\nGames Forfeited: " + forfeit;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(text).setTitle(R.string.wins_losses);
+        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // do nothing
+                // TODO: can you just remove the onclicks?
+            }
+        });
+        builder.show();
+    }
+
+    private void newGame() {
+        // Create dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure? \nConsidered a forfeit if past round 13.").setTitle("New Game");
+        // Add the buttons
+        String positiveText = "Abandon";
+        if (mGameState.mRound > 13) positiveText = "Forfeit";
+        builder.setPositiveButton("Ok - " + positiveText, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                // stats if in 2nd phase
+                if (mGameState.mRound > 13) {
+                    SharedPreferences settings = getSharedPreferences(StatsHelper.PREFS_NAME, 0);
+                    StatsHelper.incrementCount(settings, StatsHelper.PREFS_FORFEIT);
+                }
+                // TODO Closing the app and reopening restarts without forfeit.
+
+                // new game state
+                mGameState = new GameState(true);
+                mHandView.mGameState = mGameState;
+                mHandView.invalidate();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog, do nothing
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     /**
