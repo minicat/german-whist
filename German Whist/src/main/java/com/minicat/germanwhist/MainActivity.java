@@ -208,6 +208,7 @@ public class MainActivity extends ActionBarActivity {
             showStats();
             return true;
         } else if (id == R.id.action_settings) {
+            // TODO: Game difficulty, dragndrop suit order
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;

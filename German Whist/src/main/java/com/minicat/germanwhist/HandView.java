@@ -100,7 +100,7 @@ public class HandView extends View {
         // Determine order to draw cards in.
         if (mSuitOrder == null) {
             // this generally shouldn't be an  issue, but just in case
-            mSuitOrder = "♠♥♣♦"; //accessing string resources from here is meh
+            mSuitOrder = "♦♣♥♠"; //accessing string resources from here is meh
         }
         ArrayList<Card.Suit> order = new ArrayList<Card.Suit>();
         for (int i = 0; i < mSuitOrder.length(); i++) {
