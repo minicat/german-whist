@@ -226,7 +226,7 @@ public final class Card {
 
         // Draw card
         Paint pCard = new Paint();
-        pCard.setColor(Color.parseColor("#dddddd"));
+        pCard.setColor(Color.GRAY);
         c.drawRect(0, 0, WIDTH, HEIGHT, pCard);
 
         return new BitmapDrawable(context.getResources(), b);

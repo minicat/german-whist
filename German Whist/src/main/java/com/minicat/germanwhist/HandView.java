@@ -28,6 +28,7 @@ public class HandView extends View {
 
     //Context mContext;
     Paint mTextPaint;
+    Paint mArrowPaint;
     int mWidth;
     int mHeight;
 
@@ -69,6 +70,13 @@ public class HandView extends View {
         mTextPaint.setTextSize(30);
         mTextPaint.setColor(Color.BLACK);
         mTextPaint.setAntiAlias(true);
+
+
+        mArrowPaint = new Paint();
+        mArrowPaint.setTextSize(25);
+        mArrowPaint.setColor(Color.DKGRAY);
+        mArrowPaint.setAntiAlias(true);
+        mArrowPaint.setFakeBoldText(true);
         //mContext = context;
 
         // Get screen dimensions - doesnt include action bar etc
@@ -208,11 +216,10 @@ public class HandView extends View {
 
         // If this card was the last card drawn, have indicator
         // TODO: animation? MAKE THIS LESS BAD
-        // TODO: inconsistent with way card hovered over is bumped up?
         if (mGameState.mPreviousTrick != null) {
             if (mGameState.mPreviousTrick.playerDrew != null) {
                 if (card.equals(mGameState.mPreviousTrick.playerDrew)) {
-                    canvas.drawText("VVV", x, y, mTextPaint);
+                    canvas.drawText("↓", x + 6, y - 10, mArrowPaint);
                 }
             }
         }

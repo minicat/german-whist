@@ -110,6 +110,7 @@ public class CatBot extends WhistBot {
             // Iterate through to find smallest card that wins
             // TODO: It should be sorted, so this should work right?
             for (Card c : suitCards) {
+                // TODO: don't play a card too far up? eg. dont play king for trump2
                 if (c.mRank.getVal() > val) return c;
             }
         }
