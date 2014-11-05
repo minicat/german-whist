@@ -29,7 +29,7 @@ public final class Card {
      * I hate myself so much ;___; fucking enums
      */
     static enum CardColor {
-        RED(Color.RED),
+        RED(Color.parseColor("#DB2121")),
         BLACK(Color.BLACK);
 
         private int color;
@@ -194,11 +194,11 @@ public final class Card {
 
         // Draw card
         Paint pCard = new Paint();
-        pCard.setColor(Color.GRAY);
+        pCard.setColor(Color.parseColor("#A8A8A8"));
         c.drawRect(0, 0, WIDTH, HEIGHT, pCard);
 
         // Draw card border
-        pCard.setColor(Color.BLACK);
+        pCard.setColor(Color.DKGRAY);
         pCard.setStyle(Paint.Style.STROKE);
         pCard.setStrokeWidth(2);
         c.drawRect(0, 0, WIDTH, HEIGHT, pCard);
@@ -212,10 +212,10 @@ public final class Card {
         p.setAntiAlias(true);
         String text = mRank.getRep() + "" + mSuit.getRep();
 
-        c.drawText(text, WIDTH / 2, HEIGHT / 2 + 15, p);
+        c.drawText(text, WIDTH / 2, HEIGHT / 2 + 20, p);
         p.setTextSize(25);
-        c.drawText(mRank.getRep(), 10, 20, p);
-        c.drawText(mSuit.getRep(), 10, 40, p);
+        c.drawText(mRank.getRep(), 14, 22, p);
+        c.drawText(mSuit.getRep(), 14, 44, p);
 
         return new BitmapDrawable(context.getResources(), b);
     }
@@ -226,7 +226,7 @@ public final class Card {
 
         // Draw card
         Paint pCard = new Paint();
-        pCard.setColor(Color.GRAY);
+        pCard.setColor(Color.parseColor("#dddddd"));
         c.drawRect(0, 0, WIDTH, HEIGHT, pCard);
 
         return new BitmapDrawable(context.getResources(), b);
