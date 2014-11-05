@@ -23,9 +23,10 @@ public class CatBot extends WhistBot {
     public Card playFirst() {
         // If first stage, check card on top of shown pile:
         if (g.mRound < 14) {
-            if (wantToWin((Card) g.mShownPile.peek())) {
-                // Play highest non trump
-                return playHighestNotTrumps();
+            Card top = (Card) g.mShownPile.peek();
+            if (wantToWin(top)) {
+                // Play highest non trump, lower than card
+                return playHighestNotTrumps(top);
             } else {
                 // Play lowest non trump
                 return playLowestNotTrumps();
@@ -164,13 +165,19 @@ public class CatBot extends WhistBot {
         return playLowestNotTrumps();
     }
 
-    Card playHighestNotTrumps() {
+    Card playHighestNotTrumps(Card top) {
         ArrayList<Card> cards = g.mBotHand.mergeCards();
         Collections.sort(cards, new LowestComparator(g));
         // TODO: This is absolutely terrible.
         Card temp = cards.get(0);
         for (Card c : cards) {
-            if (c.mSuit != g.mTrumps) temp = c;
+            if (c.mSuit != g.mTrumps) {
+                // Don't play a card worth more than it, unless its a trump and within 3 values.
+                if ((top.mSuit == g.mTrumps && c.mRank.getVal() <= top.mRank.getVal() + 3)
+                        || c.mRank.getVal() <= top.mRank.getVal()) {
+                    temp = c;
+                }
+            }
             else break;
         }
         return temp;
