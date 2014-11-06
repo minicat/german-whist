@@ -88,8 +88,7 @@ public class GameState {
         if (card.mSuit == mFirstPlayed.mSuit) return true;
         // Or if void in that suit
         // TODO: this assumes its just checking the player hahahaha fix this later
-        if (mPlayerHand.isVoid(mFirstPlayed.mSuit)) return true;
-        return false;
+        return mPlayerHand.isVoid(mFirstPlayed.mSuit);
     }
 
     // Determines winner appropriately, and deals adding/removing cards
@@ -107,18 +106,10 @@ public class GameState {
         boolean firstWon;
         // If cards are the same suit, higher card wins.
         if (mFirstPlayed.mSuit == mSecondPlayed.mSuit) {
-            if (mFirstPlayed.mRank.getVal() > mSecondPlayed.mRank.getVal()) {
-                firstWon = true;
-            } else {
-                firstWon = false;
-            }
+            firstWon = mFirstPlayed.mRank.getVal() > mSecondPlayed.mRank.getVal();
         } else {
             // Otherwise, unless second player played a trump card, first player wins
-            if (mSecondPlayed.mSuit == mTrumps) {
-                firstWon = false;
-            } else {
-                firstWon = true;
-            }
+            firstWon = mSecondPlayed.mSuit != mTrumps;
         }
 
 
@@ -154,8 +145,7 @@ public class GameState {
         }
 
         // Fix turns
-        if (playerWon) mPlayerTurn = true;
-        else mPlayerTurn = false;
+        mPlayerTurn = playerWon;
 
         // Fix played
         mFirstPlayed = null;
@@ -181,7 +171,7 @@ public class GameState {
         /**
          * Opposite of toString.
          *
-         * @param saved
+         * @param saved The saved string to convert into a Trick.
          */
         Trick(String saved) {
             // todo needs tests for this and toString
