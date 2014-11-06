@@ -138,11 +138,14 @@ public class MainActivity extends ActionBarActivity {
      */
     void playCard(Card card) {
         Log.e(TAG, card.toString());
+        // Reset this
+        mHandView.mFailedPlay = false;
+
         // TODO Refactor into gameState.playCard or something
         // Is this an invalid play?
-
         if (!mGameState.mPlayerTurn && !mGameState.isValidPlay(card)) {
             Log.e(TAG, "Invalid play");
+            mHandView.mFailedPlay = true;
             // TODO: some kind of indicator
         } else {
             // Play the card

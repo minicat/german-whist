@@ -20,9 +20,14 @@ import java.util.Map;
  * This is called HandView, but has the other game stuff too...
  * Created by Emma on 19/01/14.
  */
-public class HandView extends View {
+public class HandView extends View implements Runnable {
 
     static final String TAG = "HandView";
+
+    /**
+     * How many dp cards should be offset by when active.
+     */
+    static final int CARD_OFFSET = 10;
 
     GameState mGameState;
 
@@ -41,6 +46,11 @@ public class HandView extends View {
     boolean playerWon;
 
     Card mHover;
+
+    boolean mFailedPlay;
+
+    boolean mDrawAnim;
+    int mDrawAnimFrames;
 
     String mSuitOrder;
 
@@ -87,6 +97,16 @@ public class HandView extends View {
         //mScreenWidth = display.getWidth();
         //mScreenHeight = display.getHeight();
 
+        // Set listener for drawing card.
+        mGameState.setRoundListener(new GameState.RoundListener() {
+            @Override
+            public void playerDrew(Card card) {
+                // Mark drawing card animation as active.
+                mDrawAnim = true;
+                mDrawAnimFrames = CARD_OFFSET;
+            }
+        });
+
     }
 
     @Override
@@ -128,12 +148,13 @@ public class HandView extends View {
                 //xLeft = mScreenPadding + (int)(i * (mWidth - mScreenPadding*2 - cardDrawable.getIntrinsicWidth()) / 12);
                 xLeft = mScreenPadding + (int) (i * (mWidth - mScreenPadding * 2 - Card.WIDTH) / 12);
 
+                // TODO: Move this into drawCard?
                 if (c != mHover) {
                     drawCard(c, xLeft, mCardsTop, canvas);
                 } else {
                     // Hovering over this card, boost it up.
                     // TODO: This may break hitbox detection?
-                    drawCard(c, xLeft, mCardsTop - 10, canvas);
+                    drawCard(c, xLeft, mCardsTop - CARD_OFFSET, canvas);
                 }
 
                 // IF not last card, then width is less
@@ -193,7 +214,29 @@ public class HandView extends View {
             canvas.drawText(message, 10, 500, mTextPaint);
         }
 
+        // Loop at 60fps.
+        postDelayed(this, 16);
     }
+
+    /**
+     * Makes it a runnable, for game loop.
+     */
+    @Override
+    public void run() {
+        // Update state of what we draw
+        //updateState();
+        // update animation for drawing a card
+        // TODO: Looks kind of weird right now, since other cards just instantly move over.
+        if (mDrawAnim) {
+            if (mDrawAnimFrames > 0) mDrawAnimFrames--;
+            else mDrawAnim = false;
+        }
+
+        // Request a redraw of this view
+        // onDraw(Canvas) will be called
+        invalidate();
+    }
+
 
     public void gameWon(boolean gameWon, boolean playerWon) {
         this.gameWon = gameWon;
@@ -210,21 +253,31 @@ public class HandView extends View {
      */
     void drawCard(Card card, int x, int y, Canvas canvas) {
         Drawable d = card.makeDrawable(getContext());
-        // can use card height/width instead
-        d.setBounds(x, y, x + d.getIntrinsicWidth(), y + d.getIntrinsicHeight());
-        d.draw(canvas);
-
+        int ymod = 0;
+        // TODO: Tidy this u.
         // If this card was the last card drawn, have indicator
-        // TODO: animation? MAKE THIS LESS BAD
         if (mGameState.mPreviousTrick != null) {
             if (mGameState.mPreviousTrick.playerDrew != null) {
                 if (card.equals(mGameState.mPreviousTrick.playerDrew)) {
-                    canvas.drawText("↓", x + 6, y - 10, mArrowPaint);
+                    // if you need to animate it, do so
+                    if (mDrawAnimFrames > 0) {
+                        ymod = CARD_OFFSET + mDrawAnimFrames;
+                    } else {
+                        // otherwise have it lifted up UNLESS another card has been hovered.
+                        // dont need to deal with it itself being hovered here (null)
+                        // Also don't hover it, if you've tried to play another card
+                        if (mHover == null && !mFailedPlay) {
+                            ymod = CARD_OFFSET;
+                        }
+                    }
                 }
             }
         }
-    }
+        // can use card height/width instead
+        d.setBounds(x, y - ymod, x + d.getIntrinsicWidth(), y + d.getIntrinsicHeight() - ymod);
+        d.draw(canvas);
 
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

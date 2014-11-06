@@ -31,6 +31,8 @@ public class GameState {
     int mRound = 1;
     int mPlayerTricks = 0;
 
+    RoundListener mRoundListener;
+
     String TAG = "GameState";
 
     /**
@@ -162,6 +164,11 @@ public class GameState {
         // increment round
         mRound++;
 
+        // notify HandView
+        if (mRoundListener != null) {
+            mRoundListener.playerDrew(mPreviousTrick.playerDrew);
+        }
+
     }
 
     public static class Trick {
@@ -211,4 +218,15 @@ public class GameState {
         }
 
     }
+
+
+    // Listener stuff.
+    public void setRoundListener(RoundListener l) {
+        this.mRoundListener = l;
+    }
+
+    public interface RoundListener {
+        public void playerDrew(Card card);
+    }
+
 }
